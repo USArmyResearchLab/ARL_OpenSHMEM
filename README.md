@@ -17,7 +17,9 @@ Prerequisites
 -----
 
 Presently, a POSIX-compliant development environment is needed, including GCC,
-GNU Make, M4, Bash (Unix shell), and Perl tools.
+GNU Make, M4, Bash (Unix shell), and Perl tools.  No external support libraries
+are required (i.e. no network interfaces) as the target platforms are multi-core
+processors.
 
 Using
 -----
