@@ -10,8 +10,8 @@ atomic, and collective operations for multicore and manycore processors (see
 The OpenSHMEM implementation is based on the [OpenSHMEM 1.4
 Specification](http://openshmem.org/site/sites/default/site\_files/OpenSHMEM-1.4.pdf)
 
-The software was developed at the US Army Research Laboratory, Computational
-Sciences Division, Computing Architectures Branch.
+This software was developed by the US Army Research Laboratory, Computational
+Sciences Division, Computing Architectures Branch, and Brown Deer Technology.
 
 Prerequisites
 -----
