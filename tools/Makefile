@@ -1,20 +1,17 @@
 # Makefile for oshrun
-
-#include ../../version
-VERSION_STRING=$(version_string)
-VERSION_NAME=$(version_name)
-
 exec_prefix=${prefix}
 
 ### this useless define is needed to silence useless autoconf warning
 datarootdir=${prefix}/share
 
-DATE = $(shell date +"%Y%m%d.%H%M")
-BUILD_STRING=$(DATE)
+BUILD=$(shell date +"%Y%m%d.%H%M")
 
-DEFS += -D__BUILD_STRING="\"$(BUILD_STRING)\""
-DEFS += -D__VERSION_STRING="\"$(VERSION_STRING)\""
-DEFS += -D__VERSION_NAME="\"$(VERSION_NAME)\""
+## this seems fragile
+VENDOR_INC = ../src/autogen/shmem_api_top.m4
+VENDOR=$(shell grep -A 1 "VENDOR_STRING" $(VENDOR_INC) | awk -F'"' '$$0=$$2')
+
+DEFS += -DBUILD_STRING="\"$(BUILD)\""
+DEFS += -DVENDOR_STRING="\"$(VENDOR)\""
 
 ######################################################################
 
@@ -25,9 +22,9 @@ INSTALL_MAN_DIR=${datarootdir}/man
 
 INSTALL_BINS = oshrun
 
-INCS += -I../../include
+INCS += -I./
 
-CFLAGS += -O1 -fPIC 
+CFLAGS += -Wextra -O3 -fPIC
 
 TARGET = oshrun
 
@@ -38,14 +35,7 @@ all: $(TARGET)
 .SUFFIXES:
 .SUFFIXES: .c .o 
 
-oshrun_sh.h: oshrun.sh
-	perl -pi -e 'chomp if eof' oshrun.sh # must remove newline at end of file
-	sed -e "s/__VERSION_STRING/$(VERSION_STRING)/" \
-		-e "s/__VERSION_NAME/$(VERSION_NAME)/" \
-		-e "s/__BUILD_STRING/$(BUILD_STRING)/" oshrun.sh > tmp_oshrun.sh
-	xxd -i tmp_oshrun.sh > oshrun_sh.h
-
-oshrun: oshrun.c oshrun_sh.h
+oshrun: oshrun.c
 	$(CC) $(CFLAGS) $(DEFS) $(INCS) -o oshrun oshrun.c
 
 .c.o:
@@ -60,7 +50,6 @@ uninstall:
 
 clean:
 	rm -f *.o *.s
-	rm -f oshrun_sh.h tmp_oshrun.sh
 
 distclean: clean
 	rm -f $(TARGET)
